@@ -472,4 +472,4 @@ async def shop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     user_data = db.get_user(user.id)
     if user.id != OWNER_ID:
-        if item[
+        if item['currency'] == 'diamond':
