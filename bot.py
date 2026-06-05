@@ -494,7 +494,7 @@ async def shop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     await query.answer()
     user = query.from_user
-    item_id = query.data.replace("buy_", 
+    item_id = query.data.replace("buy_",) 
   shop = Shop()
     item = shop.get_item(item_id)
     if not item:
