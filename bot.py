@@ -473,3 +473,44 @@ async def shop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_data = db.get_user(user.id)
     if user.id != OWNER_ID:
         if item['currency'] == 'diamond':
+            if user_data['diamonds'] < item['price']:
+                await query.answer("❌ Olmoslar yetarli emas!", show_alert=True)
+                return
+            db.spend_diamonds(user.id, item['price'])
+        else:
+            if user_data['coins'] < item['price']:
+                await query.answer("❌ Tangalar yetarli emas!", show_alert=True)
+                return
+            db.spend_coins(user.id, item['price'])
+    db.add_item(user.id, item_id)
+    await query.answer(f"✅ {item['name']} sotib olindi!", show_alert=True)
+    keyboard = Shop().get_keyboard(user.id)
+    await query.edit_message_reply_markup(reply_markup=keyboard)
+
+def main():
+    app = Application.builder().token(TOKEN).build()
+    app.add_handler(CommandHandler("start", start))
+    app.add_handler(CommandHandler("yordam", yordam))
+    app.add_handler(CommandHandler("balans", balans))
+    app.add_handler(CommandHandler("transfer", transfer))
+    app.add_handler(CommandHandler("berpul", berpul))
+    app.add_handler(CommandHandler("berdiamond", berdiamond))
+    app.add_handler(CommandHandler("yangioyun", yangi_oyun))
+    app.add_handler(CommandHandler("qoshilish", qoshilish))
+    app.add_handler(CommandHandler("boshlash", boshlash))
+    app.add_handler(CommandHandler("tunguvoh", tun_tugadi))
+    app.add_handler(CommandHandler("rolim", rolim))
+    app.add_handler(CommandHandler("ovoz", ovoz))
+    app.add_handler(CommandHandler("otish", otish))
+    app.add_handler(CommandHandler("davolash", davolash))
+    app.add_handler(CommandHandler("tekshirish", tekshirish))
+    app.add_handler(CommandHandler("himoya", himoya))
+    app.add_handler(CommandHandler("sevish", sevish))
+    app.add_handler(CommandHandler("portlatish", portlatish))
+    app.add_handler(CommandHandler("dokon", dokon))
+    app.add_handler(CallbackQueryHandler(join_callback, pattern="^join_game$"))
+    app.add_handler(CallbackQueryHandler(shop_callback, pattern="^buy_"))
+    app.run_polling()
+
+if __name__ == "__main__":
+    main()
