@@ -264,9 +264,11 @@ async def end_voting(update, context, chat_id):
 async def otish(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
     user = update.effective_user
-    if chat_id not in games or game.status != "night":
+    if chat_id not in games:
         return
     game = games[chat_id]
+    if game.status != "night":
+        return
     if user.id not in game.players or not game.players[user.id]['alive']:
         return
     if game.players[user.id]['role'] not in ['don', 'mafia', 'snayper']:
@@ -280,7 +282,7 @@ async def otish(update: Update, context: ContextTypes.DEFAULT_TYPE):
         await update.message.reply_text("❌ Topilmadi!")
         return
     game.add_night_action(user.id, 'shoot', target['id'])
-    await update.message.reply_text(f"🔫 Belgilandi!")
+    await update.message.reply_text("🔫 Belgilandi!")
 
 async def davolash(update: Update, context: ContextTypes.DEFAULT_TYPE):
     chat_id = update.effective_chat.id
@@ -470,4 +472,4 @@ async def shop_callback(update: Update, context: ContextTypes.DEFAULT_TYPE):
         return
     user_data = db.get_user(user.id)
     if user.id != OWNER_ID:
-        if item['currency'] == 'diamond':
+        if item[
